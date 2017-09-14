@@ -82,3 +82,33 @@ The processes are as follow:
 -	Iterations after the first one:
 Driver fetch the content of output file from reducer and delete the file, then calls mapper using the content from output file as arguments (a bunch of IDs). Mapper takes arguments as start points, and map their target nodes. The reducer discard duplicated IDs and output the rest to a file (a bunch of IDs).
 Repeat until the terminate condition is fulfilled.
+
+## sample runs and performance
+
+The running time is relatively long as our expected, since we ran the program on a single node and a small dataset. A single map/reduce operation may take two minutes. We also tried google web graph, a relatively larger dataset, it turned out that we cannot solved problems in a reasonable time for the most of times.
+
+#
+
+![graph](image/8.PNG)
+
+##
+
+Listing below are three sample runs on the graph above:
+
+#
+
+-	Sample run for problem 1: find nodes exactly 2 hops away from 13.
+
+![graph](image/8.PNG)
+
+#
+
+-	Sample run for problem 2: find shortest distance from 13 to 2.
+
+![graph](image/8.PNG)
+
+#
+
+-	Sample run for problem 3: find transitive closure of 13
+
+![graph](image/8.PNG)
