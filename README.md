@@ -99,16 +99,16 @@ Listing below are three sample runs on the graph above:
 
 -	Sample run for problem 1: find nodes exactly 2 hops away from 13.
 
-![graph](image/8.PNG)
+![graph](image/11.PNG)
 
 #
 
 -	Sample run for problem 2: find shortest distance from 13 to 2.
 
-![graph](image/8.PNG)
+![graph](image/12.PNG)
 
 #
 
 -	Sample run for problem 3: find transitive closure of 13
 
-![graph](image/8.PNG)
+![graph](image/13.PNG)
