@@ -27,4 +27,58 @@ This project used a 16-node graph we created to test and demonstrate programs an
 #
 
 ![graph](image/1.PNG)
+
 ![graph](image/2.PNG)
+
+## design
+
+The idea behinds three problems is the same, that is: start from a given point search its neighbor nodes, goes one step further every time until reach the terminate condition. Iterations is the same for every problem: search target nodes of start points in the graph (a table of pairs of vertexes) and use IDs of target nodes as the start points of the next iteration.
+
+##
+
+For problem 1: assume we need to find nodes that are 2 hops away from 13. Perform iterations until iteration time is equal to the 2. After iterations, the current target points are the nodes that are k hops away from 13.
+
+#
+
+![graph](image/3.PNG)
+
+##
+
+For problem 2: assume we need to find the shortest distance from 13 to 2. Using 13 as the initial start point and perform iterations until node 2 is found as a target node. At this point, the iteration times is the distance from 13 to 2.
+
+#
+
+![graph](image/4.PNG)
+
+##
+
+For problem 3: assume we start from 13, and record the ID of node that has been visited. When there is no new ID being record, terminate the iteration. The nodes recorded at this point is the transitive closure of 13.
+
+#
+
+![graph](image/5.PNG)
+
+![graph](image/6.PNG)
+
+##
+
+In a word, all these three problems could be solved using breadth-first search. The different between a normal BFS and a BFS with Map/Reduce is that in a normal BFS, the program goes through neighbor nodes one by one while Map/Reduce goes through every neighbor nodes in a single run. 
+
+#
+
+![graph](image/7.PNG)
+
+## implementation
+
+Several different implementations were tried, and the final practical design contains the following components:
+-	Mapper: take one or more arguments as the ID of starting points, goes through the graph to find targets nodes of starting points. Once find a target nodes, map its ID.
+-	Reducer: remove duplicated ID and output incoming IDs.
+-	Driver: the driver program manages iterations. It extracts the result from reducer and feed the result to mapper as the arguments for the next iteration. When the terminate condition is fulfilled, the driver ends the program and output the result.
+
+The processes are as follow:
+-	First iteration:
+   Driver calls mapper using a pre-defined node ID (the original start point) as an argument. Mapper sends IDs of target nodes of the original start point out. The reducer discard duplicated IDs and output the rest of them to a file (a bunch of IDs).
+
+-	Iterations after the first one:
+Driver fetch the content of output file from reducer and delete the file, then calls mapper using the content from output file as arguments (a bunch of IDs). Mapper takes arguments as start points, and map their target nodes. The reducer discard duplicated IDs and output the rest to a file (a bunch of IDs).
+Repeat until the terminate condition is fulfilled.
