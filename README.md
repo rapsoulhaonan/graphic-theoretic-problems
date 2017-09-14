@@ -112,3 +112,41 @@ Listing below are three sample runs on the graph above:
 -	Sample run for problem 3: find transitive closure of 13
 
 ![graph](image/13.PNG)
+
+## consideration and problem encountered
+
+Our original design is different from our final implementation. There were some problems forced us to modify our original design. The original design is as follows:
+
+Assume we need find nodes that is K hops away from node 13. Initial a distance table T with a pair (current start node, distance to the original point), (13, 0) in this case, which means 13 is 0 hop to itself.
+
+For iteration N (N starts from 1):
+1.	Map everything in T
+2.	For nodes in T, if a node (A, count) is N-1 hops away from the original point (count equals to N - 1), find its neighbor nodes C, map every node in C and increase count by one, e.g. map(C1, count + 1), map(C2, count + 2)…
+3.	Reducer receives sorted pairs. If there are multiple pairs has the same ‘current start node’, choose the smallest one and discard others. This step prevent the search ‘turning back’.
+
+#
+
+![graph](image/9.PNG)
+
+A sample run on graph above mapping pairs as following:
+
+#
+
+![graph](image/10.PNG)
+
+There are two major issues with this design:
+
+1.	Hadoop streaming doesn’t support workflow management and job chaining, we must write a driver program to control the iterations. If we decided to use a driver program, there is no point to map the distance from the original start point; the number of iteration is the distance and it could be recorded by driver program.
+2.	In this design, mapper search neighbor nodes in graph. A graph in this project is a 2* N table lists all pairs of vertexes. In real life, the graph table could be extreme large that cannot fit in a single machine. Therefore, search a graph which is stored in local machine is not applicable.
+
+Therefore, we have a driver program in our final design and map only the target node. Besides, after modifying the whole mapping process itself could be seen as a searching in a graph which is distributed among many machines.
+
+## conclusion
+
+In this project, we provide a straightforward solution to graph problems with Hadoop map/reduce. With problems encountered, our design of the program has been modified several times. Based on these problems, it could be concluded that:
+
+1.	Hadoop streaming is not a good way to solve graph problem, since it doesn’t provide good support for user to manage workflow and chaining jobs. Iteration is commonly used in solving graph problems, but Hadoop streaming is not iteration-friendly enough.
+
+2.	There are solutions for solving graph problems using Hadoop streaming, but their efficiency is not satisfying if working on insufficient nodes and small dataset.
+
+However, it is still worth to try frameworks other than Hadoop streaming to solve graph problems. Hadoop streaming itself also has rooms for improving. At least, one could build a lager cluster to obtain a faster speed. 
